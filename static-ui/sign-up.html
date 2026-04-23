@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Jira UI • Sign up</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="assets/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container py-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-7 col-lg-5">
+          <div class="d-flex align-items-center justify-content-center gap-3 mb-4">
+            <div class="brand-badge">J</div>
+            <div>
+              <div class="h4 mb-0">Jira Clone</div>
+              <div class="app-muted small">Static UI • không kết nối server</div>
+            </div>
+          </div>
+
+          <div class="app-card rounded-4 p-4 p-md-5">
+            <div class="d-flex align-items-start justify-content-between mb-3">
+              <div>
+                <div class="h5 mb-1">Tạo tài khoản</div>
+                <div class="app-muted small">Tạo profile demo để hiển thị trên dashboard.</div>
+              </div>
+              <span class="chip"><span class="status-dot todo"></span> Mock</span>
+            </div>
+
+            <form id="signUpForm" class="mt-4">
+              <div class="mb-3">
+                <label class="form-label app-muted">Tên</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent text-white border-opacity-25"><i class="bi bi-person"></i></span>
+                  <input class="form-control" type="text" name="name" placeholder="Nguyễn Văn A" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label app-muted">Email</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent text-white border-opacity-25"><i class="bi bi-envelope"></i></span>
+                  <input class="form-control" type="email" name="email" placeholder="you@example.com" required />
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label app-muted">Mật khẩu</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent text-white border-opacity-25"><i class="bi bi-lock"></i></span>
+                  <input class="form-control" type="password" name="password" placeholder=">= 6 ký tự" minlength="6" required />
+                </div>
+                <div class="form-text app-muted">UI mock: không lưu thật, chỉ dùng để hiển thị.</div>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label app-muted">Vai trò (Role)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent text-white border-opacity-25"><i class="bi bi-person-badge"></i></span>
+                  <select class="form-select" name="role">
+                    <option value="admin">Admin</option>
+                    <option value="manager" selected>Manager</option>
+                    <option value="developer">Developer</option>
+                    <option value="tester">Tester</option>
+                  </select>
+                </div>
+                <div class="form-text app-muted">Admin, Manager, Developer, Tester.</div>
+              </div>
+
+              <button class="btn btn-primary w-100 py-2" type="submit">
+                <i class="bi bi-person-plus me-2"></i>Tạo tài khoản
+              </button>
+            </form>
+
+            <div class="d-flex align-items-center justify-content-between mt-4">
+              <a class="app-link small" href="sign-in.html">Đã có tài khoản? Đăng nhập</a>
+              <a class="app-link small" href="dashboard.html">Vào thẳng dashboard</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
+
