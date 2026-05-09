@@ -1,4 +1,4 @@
-/* Jira Clone Frontend integrated with Spring Boot Backend */
+
 
 const API_BASE = "http://localhost:8080/api";
 const STORAGE_KEYS = {
@@ -14,9 +14,6 @@ const BUG_STATUS = { open: "Open", inprogress: "In Progress", resolved: "Resolve
 const BUG_PRIORITY = { low: "Low", medium: "Medium", high: "High" };
 const ROLES = { manager: "manager", developer: "developer", tester: "tester" };
 
-/**
- * Shared fetch helper with Authorization header and error handling
- */
 async function apiFetch(endpoint, options = {}) {
   const token = localStorage.getItem(STORAGE_KEYS.token);
   const headers = {
@@ -29,7 +26,7 @@ async function apiFetch(endpoint, options = {}) {
 
   try {
     const res = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
-    
+
     if (res.status === 401) {
       localStorage.removeItem(STORAGE_KEYS.token);
       window.location.href = "sign-in.html";
@@ -57,7 +54,6 @@ async function apiFetch(endpoint, options = {}) {
   }
 }
 
-
 function uid(prefix = "ws") {
   return `${prefix}_${Math.random().toString(16).slice(2)}_${Date.now().toString(16)}`;
 }
@@ -81,7 +77,6 @@ function loadJson(key, fallback) {
 function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
-
 
 async function getWorkspaces() {
   return apiFetch("/workspaces");
@@ -142,7 +137,6 @@ async function getWorkspaceMembers(workspaceId) {
   return apiFetch(`/workspaces/${workspaceId}/members`);
 }
 
-
 function getCurrentWorkspaceId() {
   return localStorage.getItem(STORAGE_KEYS.currentWorkspaceId);
 }
@@ -163,7 +157,6 @@ function getUser() {
     role: localStorage.getItem(STORAGE_KEYS.userRole) || ROLES.developer,
   };
 }
-
 
 function showToast({ title, message, variant = "primary" }) {
   const container = document.getElementById("toastContainer");
@@ -230,8 +223,7 @@ async function renderWorkspaces() {
   try {
     const workspaces = await getWorkspaces();
     let currentId = getCurrentWorkspaceId();
-    
-    // Validate if currentId exists in fetched workspaces
+
     if (!currentId || !workspaces.some((w) => String(w.id) === String(currentId))) {
       currentId = workspaces[0]?.id || null;
       if (currentId) setCurrentWorkspaceId(currentId);
@@ -282,18 +274,16 @@ function wireWorkspaceSelection() {
     if (!target) return;
     const id = target.getAttribute("data-select-workspace");
     if (!id) return;
-    
+
     setCurrentWorkspaceId(id);
-    
-    // Re-render everything that depends on workspace
+
     await renderWorkspaces();
     await renderWorkspacePageHeader();
     if (typeof renderKanbanBoard === "function") await renderKanbanBoard();
     if (typeof renderDashboardStats === "function") await renderDashboardStats();
-    
+
     showToast({ title: "Workspace", message: "Đã chuyển workspace." });
 
-    // close dropdown if clicked inside
     const dropdown = target.closest(".dropdown-menu");
     if (dropdown) {
       const toggle = dropdown.parentElement?.querySelector?.('[data-bs-toggle="dropdown"]');
@@ -303,7 +293,6 @@ function wireWorkspaceSelection() {
   });
 }
 
-
 const API_AUTH_BASE = "http://localhost:8080/api/auth";
 
 function parseApiErrorBody(text) {
@@ -312,7 +301,7 @@ function parseApiErrorBody(text) {
     const j = JSON.parse(text);
     if (j && typeof j.message === "string") return j.message;
   } catch (_) {
-    /* not JSON */
+
   }
   return text;
 }
@@ -361,7 +350,7 @@ function wireAuthForms() {
 
         const data = await res.json();
         const { token, user } = data;
-        
+
         localStorage.setItem("staticui.token", token);
         localStorage.setItem(STORAGE_KEYS.userId, user.id);
         localStorage.setItem(STORAGE_KEYS.userName, user.name);
@@ -422,7 +411,7 @@ function wireAuthForms() {
 
         const data = await res.json();
         const { token, user } = data;
-        
+
         localStorage.setItem("staticui.token", token);
         localStorage.setItem(STORAGE_KEYS.userId, user.id);
         localStorage.setItem(STORAGE_KEYS.userName, user.name);
@@ -514,7 +503,7 @@ function wireCreateWorkspaceModal() {
         method: "POST",
         body: JSON.stringify({ name }),
       });
-      
+
       setCurrentWorkspaceId(created.id);
 
       await renderWorkspaces();
@@ -532,7 +521,6 @@ function wireCreateWorkspaceModal() {
   });
 }
 
-
 async function renderKanbanBoard(filters = null) {
   const cols = ["kanbanOpen", "kanbanInProgress", "kanbanResolved", "kanbanClosed"];
   const statusLabels = { open: "Open", inprogress: "In Progress", resolved: "Resolved", closed: "Closed" };
@@ -543,23 +531,20 @@ async function renderKanbanBoard(filters = null) {
   try {
     let bugs = await getBugs(wsId);
 
-    // Apply filters client-side
     if (filters) {
       const user = getUser();
       bugs = bugs.filter((b) => {
-        // Assignee filter
+
         if (filters.assignee === "Me") {
           if (String(b.assigneeId) !== String(user.id)) return false;
         } else if (filters.assignee === "Team") {
           if (String(b.assigneeId) === String(user.id)) return false;
         }
 
-        // Priority filter
         if (filters.priority && filters.priority !== "All") {
           if (b.priority !== filters.priority) return false;
         }
 
-        // Keyword filter
         if (filters.keyword) {
           const kw = filters.keyword.toLowerCase();
           const title = (b.title || "").toLowerCase();
@@ -576,7 +561,7 @@ async function renderKanbanBoard(filters = null) {
       if (!el) return;
       const statusValue = Object.values(statusLabels)[i];
       const columnBugs = bugs.filter((b) => b.status === statusValue);
-      
+
       el.innerHTML = columnBugs
         .map((b) => {
           const prioClass = b.priority === "High" ? "badge-priority-high" : b.priority === "Medium" ? "badge-priority-medium" : "badge-priority-low";
@@ -624,12 +609,10 @@ function wireBoardFilters() {
     showToast({ title: "Filters", message: "Đã áp dụng bộ lọc.", variant: "info" });
   });
 
-  // Also support Enter key on keyword input
   document.getElementById("boardFilterKeyword")?.addEventListener("keypress", (e) => {
     if (e.key === "Enter") btn.click();
   });
 }
-
 
 function wireCreateBugModal() {
   const form = document.getElementById("createBugForm");
@@ -642,8 +625,18 @@ function wireCreateBugModal() {
     if (!wsId) return;
     try {
       const members = await getWorkspaceMembers(wsId);
-      assigneeSel.innerHTML = '<option value="">-- Chưa gán --</option>' + 
+      assigneeSel.innerHTML = '<option value="">-- Chưa gán --</option>' +
         members.map((m) => `<option value="${m.userId}">${escapeHtml(m.name)}</option>`).join("");
+      
+      const workspaces = await getWorkspaces();
+      const currentWs = workspaces.find((w) => String(w.id) === String(wsId));
+      if (currentWs?.myRole !== "Manager" && getUser().role !== "admin" && getUser().role !== "Admin") {
+        assigneeSel.disabled = true;
+        assigneeSel.title = "Chỉ Manager mới có quyền gán người xử lý";
+      } else {
+        assigneeSel.disabled = false;
+        assigneeSel.title = "";
+      }
     } catch (err) {
       console.error("Failed to fetch members for bug creation:", err);
     }
@@ -687,7 +680,6 @@ function wireCreateBugModal() {
   });
 }
 
-
 function wireBugDetailModal() {
   document.addEventListener("show.bs.modal", (e) => {
     if (e.target.id !== "bugDetailModal") return;
@@ -705,7 +697,7 @@ async function openBugDetailModal(bugId) {
   if (!modal) return;
 
   try {
-    // Fetch all data in parallel
+
     const [bug, history, comments, attachments] = await Promise.all([
       getBugDetails(bugId),
       getBugHistory(bugId),
@@ -719,8 +711,8 @@ async function openBugDetailModal(bugId) {
     const deleteBtn = modal.querySelector("[data-action='delete-bug']");
     if (deleteBtn) {
       deleteBtn.setAttribute("data-bug-id", bugId);
-      // Backend handles permission, but we can do a UI hint
-      deleteBtn.disabled = false; 
+
+      deleteBtn.disabled = false;
     }
 
     modal.querySelector("#bugDetailId").textContent = `#${bug.id}`;
@@ -735,9 +727,19 @@ async function openBugDetailModal(bugId) {
     if (assigneeSelect) {
       const wsId = getCurrentWorkspaceId();
       const members = await getWorkspaceMembers(wsId);
-      assigneeSelect.innerHTML = '<option value="">-- Chưa gán --</option>' + 
+      assigneeSelect.innerHTML = '<option value="">-- Chưa gán --</option>' +
         members.map((m) => `<option value="${m.userId}" ${m.userId === bug.assigneeId ? "selected" : ""}>${escapeHtml(m.name)}</option>`).join("");
-      
+
+      const workspaces = await getWorkspaces();
+      const currentWs = workspaces.find((w) => String(w.id) === String(wsId));
+      if (currentWs?.myRole !== "Manager" && getUser().role !== "admin" && getUser().role !== "Admin") {
+        assigneeSelect.disabled = true;
+        assigneeSelect.title = "Chỉ Manager mới có quyền thay đổi người xử lý";
+      } else {
+        assigneeSelect.disabled = false;
+        assigneeSelect.title = "";
+      }
+
       assigneeSelect.onchange = async () => {
         const newAssigneeId = assigneeSelect.value ? parseInt(assigneeSelect.value, 10) : null;
         try {
@@ -755,7 +757,7 @@ async function openBugDetailModal(bugId) {
 
     const historyContainer = modal.querySelector("#bugDetailHistoryTimeline");
     if (historyContainer) {
-      historyContainer.innerHTML = history.length === 0 
+      historyContainer.innerHTML = history.length === 0
         ? '<div class="small app-muted">Không có lịch sử.</div>'
         : history.map(h => `
           <div class="position-relative mb-2 ms-2">
@@ -820,8 +822,7 @@ async function openBugDetailModal(bugId) {
 
     const uploadForm = modal.querySelector("#bugDetailUploadForm");
     if (uploadForm) {
-      // Render existing attachments if container exists
-      // For now, let's just update the upload logic
+
       uploadForm.onsubmit = async (ev) => {
         ev.preventDefault();
         const fileInput = uploadForm.querySelector('input[type="file"]');
@@ -851,7 +852,6 @@ async function openBugDetailModal(bugId) {
   }
 }
 
-
 function wireDeleteBugAction() {
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-action='delete-bug']");
@@ -878,7 +878,6 @@ function wireDeleteBugAction() {
   });
 }
 
-
 function wireEditBugModal() {
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest("[data-action='edit-bug']");
@@ -899,10 +898,10 @@ function wireEditBugModal() {
       form.querySelector('[name="description"]').value = bug.description || "";
       form.querySelector('[name="status"]').value = bug.status;
       form.querySelector('[name="priority"]').value = bug.priority || "medium";
-      
+
       const assigneeSel = form.querySelector('[name="assigneeId"]');
       if (assigneeSel) {
-        assigneeSel.innerHTML = '<option value="">-- Chưa gán --</option>' + 
+        assigneeSel.innerHTML = '<option value="">-- Chưa gán --</option>' +
           members.map((m) => `<option value="${m.userId}" ${m.userId === bug.assigneeId ? "selected" : ""}>${escapeHtml(m.name)}</option>`).join("");
       }
 
@@ -913,7 +912,6 @@ function wireEditBugModal() {
     }
   });
 }
-
 
 function wireEditBugForm() {
   const form = document.getElementById("editBugForm");
@@ -950,13 +948,12 @@ function wireEditBugForm() {
   });
 }
 
-
 async function renderDashboardStats() {
   const wsId = getCurrentWorkspaceId();
   if (!wsId) return;
 
   try {
-    // Fetch statistics from Backend API instead of local calculation
+
     const [summary, priority, developers] = await Promise.all([
       apiFetch(`/dashboard/summary?workspaceId=${wsId}`),
       apiFetch(`/dashboard/by-priority?workspaceId=${wsId}`),
@@ -988,7 +985,6 @@ async function renderDashboardStats() {
   }
 }
 
-
 async function renderMemberTable() {
   const tbody = document.getElementById("memberTableBody");
   if (!tbody) return;
@@ -998,6 +994,23 @@ async function renderMemberTable() {
 
   try {
     const members = await getWorkspaceMembers(wsId);
+
+    const user = getUser();
+    const isSystemAdmin = String(user.role).toLowerCase() === "admin";
+    const workspaces = await getWorkspaces();
+    const currentWorkspace = workspaces.find((w) => String(w.id) === String(wsId));
+    const isManager = currentWorkspace && String(currentWorkspace.myRole).toLowerCase() === "manager";
+    const canManage = isManager || isSystemAdmin;
+
+    const inviteForm = document.getElementById("inviteMemberForm");
+    if (inviteForm) {
+      if (canManage) {
+        inviteForm.style.display = "flex";
+      } else {
+        inviteForm.style.display = "none";
+      }
+    }
+
     tbody.innerHTML = members.map(m => `
       <tr>
         <td>
@@ -1010,19 +1023,24 @@ async function renderMemberTable() {
           </div>
         </td>
         <td>
-          <select class="form-select form-select-sm dev-role-select" data-user-id="${m.userId}">
-            <option value="developer" ${m.role === 'developer' ? 'selected' : ''}>Developer</option>
-            <option value="tester" ${m.role === 'tester' ? 'selected' : ''}>Tester</option>
-            <option value="manager" ${m.role === 'manager' ? 'selected' : ''}>Manager</option>
-          </select>
+          ${canManage
+            ? `<select class="form-select form-select-sm dev-role-select" data-user-id="${m.userId}">
+                <option value="developer" ${m.role === 'developer' ? 'selected' : ''}>Developer</option>
+                <option value="tester" ${m.role === 'tester' ? 'selected' : ''}>Tester</option>
+                <option value="manager" ${m.role === 'manager' ? 'selected' : ''}>Manager</option>
+              </select>`
+            : `<span class="badge role-badge text-bg-secondary">${escapeHtml(m.role)}</span>`
+          }
         </td>
         <td class="text-end">
-          <button class="btn btn-sm btn-soft text-danger" title="Xóa khỏi nhóm" data-action="remove-member" data-user-id="${m.userId}"><i class="bi bi-person-x"></i></button>
+          ${canManage
+            ? `<button class="btn btn-sm btn-soft text-danger" title="Xóa khỏi nhóm" data-action="remove-member" data-user-id="${m.userId}"><i class="bi bi-person-x"></i></button>`
+            : ``
+          }
         </td>
       </tr>
     `).join('');
 
-    // Handle role changes
     tbody.querySelectorAll('.dev-role-select').forEach(sel => {
       sel.addEventListener('change', async (e) => {
         const uid = e.target.getAttribute('data-user-id');
@@ -1036,7 +1054,6 @@ async function renderMemberTable() {
       });
     });
 
-    // Handle member removal
     tbody.querySelectorAll('[data-action="remove-member"]').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         const uid = btn.getAttribute('data-user-id');
@@ -1055,7 +1072,6 @@ async function renderMemberTable() {
     console.error("Failed to render member table:", err);
   }
 }
-
 
 function wireMemberManagementModal() {
   document.addEventListener("show.bs.modal", async (e) => {
@@ -1102,7 +1118,7 @@ function wireLogout() {
 
 function wireKeyboardShortcuts() {
   document.addEventListener("keydown", (e) => {
-    // Ctrl/Cmd + K: focus search (if present)
+
     const isCmdK = (e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K");
     if (!isCmdK) return;
     const candidates = [
@@ -1119,15 +1135,13 @@ function wireKeyboardShortcuts() {
 
 async function init() {
   renderUser();
-  
-  // Initial data load
+
   await renderWorkspaces();
   await renderWorkspaceTable();
   await renderWorkspacePageHeader();
   await renderKanbanBoard();
   await renderDashboardStats();
 
-  // Wire events
   wireWorkspaceSelection();
   wireAuthForms();
   wireCreateWorkspaceModal();
@@ -1143,5 +1157,4 @@ async function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
-
 

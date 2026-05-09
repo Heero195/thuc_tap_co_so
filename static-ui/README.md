@@ -1,6 +1,6 @@
 # Static UI – Hệ thống quản lý Bug (HTML + CSS + Bootstrap + JS)
 
-Giao diện mô phỏng **hệ thống quản lý bug** cho nhóm phát triển phần mềm (Jira clone). Mock data + localStorage, không gọi API.
+
 
 ## Cấu trúc
 
@@ -11,7 +11,7 @@ Giao diện mô phỏng **hệ thống quản lý bug** cho nhóm phát triển 
 - `assets/styles.css`: CSS bổ sung
 - `assets/app.js`: Logic mock (localStorage, bug CRUD, assignee, comment, thống kê)
 
-## Chức năng (phù hợp đề tài)
+## Chức năng 
 
 - **Quản lý người dùng**: Đăng ký, đăng nhập, phân quyền (Admin, Manager, Developer, Tester)
 - **Quản lý Bug**: ID, Title, Description, Priority, Status, Reporter, Assignee, Create date
@@ -26,9 +26,4 @@ Giao diện mô phỏng **hệ thống quản lý bug** cho nhóm phát triển 
 - Mở trực tiếp file `static-ui/sign-in.html` bằng trình duyệt, hoặc
 - Dùng một static server (khuyến nghị để tránh một số hạn chế khi điều hướng file):
 
-```bash
-npx serve "d:\cnpm\jira-nextjs-hono-main\jira-nextjs-hono-main\static-ui"
-```
-
-Sau đó mở trang theo URL server in ra.
 
