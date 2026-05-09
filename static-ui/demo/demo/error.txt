@@ -1,0 +1,47 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------------< com.example:demo >--------------------------
+[INFO] Building demo 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ demo ---
+[INFO] Deleting D:\thuc_tap_co_so\New folder\static-ui\demo\demo\target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ demo ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 39 source files with javac [debug parameters release 17] to target\classes
+[INFO] /D:/thuc_tap_co_so/New folder/static-ui/demo/demo/src/main/java/com/example/demo/config/SecurityConfig.java: D:\thuc_tap_co_so\New folder\static-ui\demo\demo\src\main\java\com\example\demo\config\SecurityConfig.java uses or overrides a deprecated API.
+[INFO] /D:/thuc_tap_co_so/New folder/static-ui/demo/demo/src/main/java/com/example/demo/config/SecurityConfig.java: Recompile with -Xlint:deprecation for details.
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /D:/thuc_tap_co_so/New folder/static-ui/demo/demo/src/main/java/com/example/demo/controller/AuthController.java:[55,50] method toUserDto in class com.example.demo.model.mapper.UserMapper cannot be applied to given types;
+  required: com.example.demo.entity.User,com.example.demo.entity.Member
+  found:    com.example.demo.entity.User
+  reason: actual and formal argument lists differ in length
+[INFO] 1 error
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.307 s
+[INFO] Finished at: 2026-04-03T00:56:09+07:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.1:compile (default-compile) on project demo: Compilation failure
+[ERROR] /D:/thuc_tap_co_so/New folder/static-ui/demo/demo/src/main/java/com/example/demo/controller/AuthController.java:[55,50] method toUserDto in class com.example.demo.model.mapper.UserMapper cannot be applied to given types;
+[ERROR]   required: com.example.demo.entity.User,com.example.demo.entity.Member
+[ERROR]   found:    com.example.demo.entity.User
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
